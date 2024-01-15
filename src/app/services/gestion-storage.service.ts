@@ -26,7 +26,7 @@ export class GestionStorageService {
     await Preferences.set({ key, value: JSON.stringify(value) });
   }
   
-  // A partir de su clave obtiene un objeto almacenado en local
+  // A partir de su clave obtiene un objeto del tipo Promesa de Artículos almacenado en local
   // Antes de devolverlo, debe ser convertido de formato JSON a formato normal
   async getObject(key: string): Promise <Article[]> {
     const ret: any = await Preferences.get({ key });

@@ -11,9 +11,10 @@ export class GestionNoticiasLeerService {
   private leerNoticias : Article[] = [];
 
   constructor(public gestionAlmacenNoticias:GestionStorageService) { 
-    //Recoger datos del storage
+    //Recogemos datos del storage
     let datosPromesa: Promise<Article[]> = gestionAlmacenNoticias.getObject("noticias");
     datosPromesa.then (datos=> {
+      //Si hay datos los añade al array leerNoticias
       if (datos){
       this.leerNoticias.push(...datos);
       }
@@ -29,8 +30,8 @@ export class GestionNoticiasLeerService {
   addNoticias(noticia : Article){
     let noticiaString = JSON.stringify(noticia);
     noticia = JSON.parse(noticiaString);
-
     this.leerNoticias.push(noticia);
+    //Actualizamos el almacen cuya clave es noticias
     this.gestionAlmacenNoticias.setObject("noticias",this.leerNoticias);
   }
 
@@ -52,6 +53,7 @@ export class GestionNoticiasLeerService {
     let indice = this.buscarNoticia(item);
     if (indice != -1) {
       this.leerNoticias.splice(indice, 1);
+      //Actualizamos el almacen cuya clave es noticias
       this.gestionAlmacenNoticias.setObject("noticias",this.leerNoticias);
     
     }

@@ -20,7 +20,7 @@ export class Tab1Page {
 
   //Añadimos HttpClient y los servicios en el constructor
   constructor(private leerArticulosFicheroHttp: HttpClient, public gestionNoticiasLeerService: GestionNoticiasLeerService,private gestionAlmacenNoticias: GestionStorageService) {
- 
+    // cargamos las noticias segun la categoría alegida
     this.consultaGetCategoria(this.valor);
   }
 
@@ -44,6 +44,7 @@ export class Tab1Page {
     }    
   }
 
+  //generamosun evento en el que si clickamos una categoría nos devuelve el valor de la etiqueta del html
   public cambiarCategoria(evento: any){
     const valor = evento.detail.value;
     console.log (valor);
@@ -51,11 +52,13 @@ export class Tab1Page {
     this.consultaGetCategoria(valor);
   }
 
+  //realizamos una consulta qet según el valor de la categoria que nos devuelve el evento  
   private consultaGetCategoria(valor: string) {
-    // Declaramos el observable y lo inicializamos con una consulta GET
+    // Declaramos el observable y lo inicializamos con una consulta GET por categoria
     let url = "https://newsapi.org/v2/top-headlines?category="+valor+"&apiKey=95f72f17192c44e5861827c824a05dce";
     let observableRest: Observable<RespuestaNoticias> = this.leerArticulosFicheroHttp.get<RespuestaNoticias>(url);
-    // Nos suscribimos al observable y cuando recibimos datos los mostramos por consola
+    // Nos suscribimos al observable y cuando recibimos datos los mostramos por consola, los añadimos al array de noticias
+    //que visualizamos y actualizamos datos en el storage.
     observableRest.subscribe( datos => {
       console.log(datos);
       this.listaNoticias.push(...datos.articles);
