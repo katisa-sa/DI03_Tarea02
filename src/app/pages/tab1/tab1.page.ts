@@ -52,7 +52,6 @@ export class Tab1Page {
     //que visualizamos y actualizamos datos en el storage.
     observableRest.subscribe( datos => {
       this.listaNoticias.push(...datos.articles);
-      //this.gestionAlmacenNoticias.setObject("Noticias",this.listaNoticias);
     });    
   }
 
