@@ -8,7 +8,7 @@ import { GestionStorageService } from './gestion-storage.service';
 
 export class GestionNoticiasLeerService {
 
-  private leerNoticias : Article[] = [];
+  public leerNoticias : Article[] = [];
 
   constructor(public gestionAlmacenNoticias:GestionStorageService) { 
     //Recogemos datos del storage
@@ -20,6 +20,7 @@ export class GestionNoticiasLeerService {
       }
     })
   }
+
   // Devuelve todas las noticias para leer
   async getNoticias() {
     this.leerNoticias = await this.gestionAlmacenNoticias.getObject("noticias");
