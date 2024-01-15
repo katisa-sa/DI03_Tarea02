@@ -3,6 +3,29 @@
     <ion-title>
       Mis Noticias
     </ion-title>
+    <ion-segment value="heart" scrollable="true"  (ionChange)="cambiarCategoria($event)">
+      <ion-segment-button value="general">
+        <ion-label>General</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="business">
+        <ion-label>Business</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="entertaiment">
+        <ion-label>Entertaiment</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="health">
+        <ion-label>Health</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="science">
+        <ion-label>Science</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="sports">
+        <ion-label>Sports</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="technology">
+        <ion-label>Technology</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 

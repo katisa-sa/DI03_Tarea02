@@ -1,8 +1,10 @@
+
 import { GestionNoticiasLeerService } from './../../services/gestion-noticias-leer.service';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { RespuestaNoticias, Article } from './../../interfaces/interfaces';
+import { GestionStorageService } from 'src/app/services/gestion-storage.service';
 
 @Component({
   selector: 'app-tab1',
@@ -13,33 +15,14 @@ export class Tab1Page {
 
   //Declaramos y creamos el array de noticias vacío
   listaNoticias: Article[] = [];
-  /*
-   * Creamos un objeto {} Observable que estará vacío y será del tipo Observable<RespuestaNoticias>. En este caso estamos creando un objeto vacío no será null.
-   *
-   * Otra manera de hacer esto sería utilizar | null = null, de esta manera decimos que el objeto respuestaNoticiasObservable de tipo Observable<RespuestaNoticias>
-   * puede ser null y lo inicializamos null.
-   * 
-   * Crearlo como global puede ser útil si utilizamos el observable en varios métodos.
-  */
-  //respuestaNoticiasObservable: Observable<RespuestaNoticias> = {} as Observable<RespuestaNoticias>;
-  //respuestaNoticiasObservable: Observable<RespuestaNoticias> | null = null;
+  valor:string = "general";
 
-  //Añadimos HttpClient y el servicio en el constructor
-  constructor(private leerArticulosFicheroHttp: HttpClient, public gestionNoticiasLeerService: GestionNoticiasLeerService) {
-    //Incluso podríamos crear la llamada en el constructor si fuese necesario
-    //this.respNoticiasObservable = this.leerArticulosFicheroHttp.get<RespuestaNoticias>("/assets/datos/articulos.json");
-    this.leerArticulosFichero();
+  //Añadimos HttpClient y los servicios en el constructor
+  constructor(private leerArticulosFicheroHttp: HttpClient, public gestionNoticiasLeerService: GestionNoticiasLeerService,private gestionAlmacenNoticias: GestionStorageService) {
+ 
+    this.consultaGetCategoria(this.valor);
   }
 
-  private leerArticulosFichero(){
-    //Hacemos uso de la función get de HttpClient para leer el json diciendo que será de tipo RespuestaNoticias y la guardamos
-    let respNoticiasObservable: Observable<RespuestaNoticias> | null = null;
-    respNoticiasObservable = this.leerArticulosFicheroHttp.get<RespuestaNoticias>("/assets/datos/articulos.json");
-    respNoticiasObservable.subscribe( resp => {
-      console.log("Noticias", resp);
-      this.listaNoticias.push(...resp.articles);
-    });
-  }
 
   // Comprueba si la noticia seleccionada (checked) está para leer o no
   seleccionado(item: Article): boolean {
@@ -47,11 +30,11 @@ export class Tab1Page {
     if (indice != -1) {
       return true;
     }
-    return false; 
+    return false;   
   }
 
   // Cuando cambia el check, en función de su valor añade o borra la noticia del array
-  checkNoticia(eventoRecibido: any, item: Article) {
+  public checkNoticia(eventoRecibido: any, item: Article) {
     let estado: boolean = eventoRecibido.detail.checked;
     if (estado) {
       this.gestionNoticiasLeerService.addNoticias(item);
@@ -59,4 +42,24 @@ export class Tab1Page {
       this.gestionNoticiasLeerService.borrarNoticia(item);
     }    
   }
+
+  public cambiarCategoria(evento: any){
+    const valor = evento.detail.value;
+    console.log (valor);
+    this.listaNoticias = [];
+    this.consultaGetCategoria(valor);
+  }
+
+  private consultaGetCategoria(valor: string) {
+    // Declaramos el observable y lo inicializamos con una consulta GET
+    let url = "https://newsapi.org/v2/top-headlines?category="+valor+"&apiKey=95f72f17192c44e5861827c824a05dce";
+    let observableRest: Observable<RespuestaNoticias> = this.leerArticulosFicheroHttp.get<RespuestaNoticias>(url);
+    // Nos suscribimos al observable y cuando recibimos datos los mostramos por consola
+    observableRest.subscribe( datos => {
+      console.log(datos);
+      this.listaNoticias.push(...datos.articles);
+      this.gestionAlmacenNoticias.setObject("noticias",this.listaNoticias);
+    });    
+  }
+  
 }

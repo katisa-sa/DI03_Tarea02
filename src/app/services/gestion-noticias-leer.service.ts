@@ -1,17 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Article } from '../interfaces/interfaces';
+import { GestionStorageService } from './gestion-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class GestionNoticiasLeerService {
 
   private leerNoticias : Article[] = [];
 
-  constructor() { }
-
+  constructor(public gestionAlmacenNoticias:GestionStorageService) { 
+    //Recoger datos del storage
+    let datosPromesa: Promise<Article[]> = gestionAlmacenNoticias.getObject("noticias");
+    datosPromesa.then (datos=> {
+      if (datos){
+      this.leerNoticias.push(...datos);
+      }
+    })
+  }
   // Devuelve todas las noticias para leer
-  getNoticias() {
+  async getNoticias() {
+    this.leerNoticias = await this.gestionAlmacenNoticias.getObject("noticias");
     return this.leerNoticias;
   }
 
@@ -21,6 +31,7 @@ export class GestionNoticiasLeerService {
     noticia = JSON.parse(noticiaString);
 
     this.leerNoticias.push(noticia);
+    this.gestionAlmacenNoticias.setObject("noticias",this.leerNoticias);
   }
 
   /* Comprueba si una noticia ya está en el array.
@@ -41,6 +52,8 @@ export class GestionNoticiasLeerService {
     let indice = this.buscarNoticia(item);
     if (indice != -1) {
       this.leerNoticias.splice(indice, 1);
+      this.gestionAlmacenNoticias.setObject("noticias",this.leerNoticias);
+    
     }
   }
 
