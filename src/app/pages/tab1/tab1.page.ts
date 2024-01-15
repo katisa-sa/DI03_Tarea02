@@ -15,6 +15,7 @@ export class Tab1Page {
 
   //Declaramos y creamos el array de noticias vacío
   listaNoticias: Article[] = [];
+  //inicializamos la categoria en general
   valor:string = "general";
 
   //Añadimos HttpClient y los servicios en el constructor
